@@ -5,7 +5,7 @@
 
 int main () {
   // opening the file with the pFile pointer
-  FILE *pFile = fopen("data_subjects_info.csv", "r");
+  FILE *pFile = fopen("../Data/data_subjects_info.csv", "r");
 
   // checking if the file is opened
   if (pFile == NULL) {
