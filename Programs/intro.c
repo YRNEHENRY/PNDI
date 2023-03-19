@@ -32,7 +32,7 @@ int main(void){
     int error_t;
     error_t = fopen_s(&fichText, "data.csv", "w");
     if(error_t){
-        fprintf(fichText, "%f %d %s", data.rNbr, data.intNbr, data.car)
+        fprintf(fichText, "%f %d %s", data.rNbr, data.intNbr, data.car);
         fclose(fichText);
     }
 
