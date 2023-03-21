@@ -1,4 +1,4 @@
-// read CSV file
+// read CSV file program
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
