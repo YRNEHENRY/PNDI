@@ -3,7 +3,7 @@ This repository is used in our PNDI course and is intended to introduce us to da
 
 # What does it contain?
 It contains in a first step our different labs and introductory exercises.  
-In a second time it contains our project on this course
+In a second time it contains our project on this course.
 
 In the folders Data, Documents and Algorithms we will find respectively the csv files on which we work, the documents containing the instructions of our work and finally the algorithms of our programs.
 
