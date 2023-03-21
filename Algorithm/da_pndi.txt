@@ -1,0 +1,63 @@
+---*
+paths[15][7] = "dws_1/","dws_2/","dws_11/","jog_9/","jog_16/","sit_5/","sit13/"…
+
+i = 0
+// On parcours nos 15 dossiers reprenant les mouvements
+while (i < 15)
+
+y = 1
+// On parcours nos 24 mouvements
+while (y <= 24)
+
+url = paths[i] + "sub" + y + ".csv"
+movementFile = open(url)
+
+if(movementFile == NULL)
+exit
+else
+
+line = movementFile.getLine()
+
+// On lit chaque ligne du csv
+while (line != EOF)
+
+module(getAccelerationLine;line;accelerations)
+
+
+module(findOutlier;accelerations, url;)
+
+line = movementFile.getLine()
+endwhile
+----
+y++
+endwhile
+i++
+endwhile
+------
+
+
+
+module(findOutlier;accelerations, url, nbLine;)
+---*
+outliers[3]
+if (accelerations[0])
+outliers[0] = True
+----
+if(accelerations[1])
+outliers[1] = True
+----
+
+if(accelerations[2])
+outliers[2] = False
+----
+
+if(outliers != NULL)
+ouvrir fichier
+ligneFichier = url + "," nbLine + "," + taille de outliers
+ligneFichier += en fonction du tableau outliers enregister l'information de accelerations
+enregistrer ligneFichier dans le fichier
+fermer fichier
+
+// désolé on a fait vite on avait plus le temps, on le refera
+----
+------
