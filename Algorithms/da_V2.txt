@@ -1,0 +1,124 @@
+module(main;;)
+---*
+paths[15][7] = "dws_1/","dws_2/","dws_11/","jog_9/","jog_16/","sit_5/","sit13/"…
+vectorXOutliers, vectorYOutliers, vectorZOutliers = reserve MAX_SIZE float locations 
+vectorXOutlierLines, vectorYOutlierLines, vectorZOutlierLines = reserve MAX_SIZE int locations
+
+pFileOutliers = opening the file (in append mod)
+if(pFileOutliers == NULL)
+print "Error when opening the file: review_outliers" 
+exit
+endif
+
+iMovement = 0
+// We run through our 15 files containing the movements
+while (iMovement < 15)
+iSub = 1
+
+// We run through our 24 movements (sub)
+while (iSub <= 24)
+url = paths[iMovement] + "sub" + y + ".csv"
+pFileMovements = opening the file (in read mod) from the url
+
+if(pFileSub == NULL)
+// url, nbLignes, isMissingValue
+print "Error when opening the file: " + url + "0,0,"
+exit
+endif
+
+line = get the line of pFileSub
+
+// We read each line of the csv
+while (line != EOF) // End Of File
+
+module(getAccelerationLine;line;accelerations)
+
+
+module(findOutliers;accelerations, line, 6vectorsTable;6vectorsTable)
+
+line = get the line of pFileSub
+endwhile
+
+module(writeOutliers;6vectorsTables, url, line, isMissingValue;)
+
+close pFileSub
+iSub++
+endwhile
+iMovement++
+endwhile
+close pFileOutliers
+------
+
+
+
+module(findOutliers;accelerations, lineNumber, 6vectorsTables;6vectorsTables)
+---*
+outliers = [0, 0, 0]
+means = [0.00096087, 0.05525659, 0.0352192] // normal law of mean α
+standard_deviations = [0.38875666, 0.61937128, 0.4300345] // standard_deviation β
+
+while (iVector < 3)
+if (ABS(accelerations[iVector] - means[iVector]) > 3 * standard_deviations[iVector])
+outliers[iVector] = 1
+endif
+
+iVector++
+endwhile
+
+if(outliers[0] == 1)
+vectorXOutliers += accelerations[0]
+vectorXOutlierLines += line
+
+if(sizeOf(vectorXOutliers) % MAX_SIZE == 0)
+module(memoryAllocation; vectorXOutlierLines, vectorXOutliers; vectorXOutlierLines, vectorXOutliers)
+endif
+endif
+
+if(outliers[1] == 1)
+vectorYOutliers += accelerations[1]
+vectorYOutlierLines += line
+
+if(sizeOf(vectorYOutliers) % MAX_SIZE == 0)
+module(memoryAllocation; vectorYOutlierLines, vectorYOutliers; vectorYOutlierLines, vectorYOutliers)
+endif
+endif
+
+if(outliers[2] == 1)
+vectorZOutliers += accelerations[2]
+vectorZOutlierLines += line
+
+if(sizeOf(vectorZOutliers) % MAX_SIZE == 0)
+module(memoryAllocation; vectorZOutlierLines, vectorZOutliers; vectorZOutlierLines, vectorZOutliers)
+endif
+endif
+------
+
+
+
+module(writeOutliers;6vectorsTables, url, line, isMissingValue;)
+---*
+write in pFileOutliers file : url + "," + line + "," + isMissingValue + "," + sizeOf(vectorXOutliers)
+
+while (i < sizeOf(vectorXOutliers))
+append to pFileOutliers : "," + vectorXOutlierLines[i] + "," + vectorXOutliers[i]
+endwhile
+
+append to pFileOutliers : "," + sizeOf(vectorYOutliers)
+while (i < sizeOf(vectorYOutliers))
+append to pFileOutliers : "," + vectorYOutlierLines[i] + "," + vectorYOutliers[i]
+endwhile
+
+append to pFileOutliers : "," + sizeOf(vectorZOutliers)
+while (i < sizeOf(vectorZOutliers))
+append to pFileOutliers : "," + vectorZOutlierLines[i] + "," + vectorZOutliers[i]
+endwhile
+
+end the line of pFileOutliers
+------
+
+
+module(memoryAllocation;table1, table2;table1, table2)
+---*
+table1 = table1 + MAX_SIZE
+table2 = table2 + MAX_SIZE
+------
