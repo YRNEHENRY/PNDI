@@ -12,7 +12,7 @@ struct outlier {
     struct outlier* next;
 };
 
-typedef struct LineVectors LINEVECTORS;
+typedef struct LineVectors LINE_VECTORS;
 struct LineVectors {
     int time;
     double vectorX;
@@ -21,8 +21,8 @@ struct LineVectors {
 };
 
 void checkOutliers();
-void writeOutliers();
-LINEVECTORS getLineVectors(char* line);
+void writeOutliers(FILE* file, char* url, int numLine, int isMissingTime, int nbOutliersX, int nbOutliersY, int nbOutliersZ, OUTLIER* pOutliersX, OUTLIER* pOutliersY, OUTLIER* pOutliersZ);
+LINE_VECTORS getLineVectors(char* line);
 void freeLineVectors(char** lineVectors, int numValues);
 
 int main(){
@@ -65,7 +65,8 @@ int main(){
             }
 
             // initialization of the necessary variables
-            int nbLine, time, missingTime = 0;
+            int nbLine, isMissingTime = 0;
+            int previousTime = -1;
             int nbOutliersX, nbOutliersY, nbOutliersZ = 0;
             OUTLIER* pStartOutliersX = malloc(sizeof(OUTLIER));
             OUTLIER* pStartOutliersY = malloc(sizeof(OUTLIER));
@@ -76,9 +77,19 @@ int main(){
 
             // we read the file line by line, beginning with the second line, until the end of the file
             while (fgets(line, MAX_SIZE, pFileSub) != NULL) { 
-                LINEVECTORS lineVectors = getLineVectors(line);
+                LINE_VECTORS lineVectors = getLineVectors(line);
+                
+                if (previousTime != -1 && isMissingTime != 1 && lineVectors.time != previousTime + 1) {
+                    isMissingTime = 1;
+                }
+                previousTime = lineVectors.time;
+
+                // findOutliers
+
+                nbLine++;
             }
 
+            writeOutliers(pFileOutliers, url, nbLine, isMissingTime, nbOutliersX, nbOutliersY, nbOutliersZ, pStartOutliersX, pStartOutliersY, pStartOutliersZ);
             fclose(pFileSub);
         }
     }
@@ -86,8 +97,8 @@ int main(){
 }
 
 
-LINEVECTORS getLineVectors(char* line){
-    LINEVECTORS lineVectors;
+LINE_VECTORS getLineVectors(char* line){
+    LINE_VECTORS lineVectors;
 
     char** values = extractValues(line);
     lineVectors.time = atoi(values[0]);
@@ -105,4 +116,31 @@ void freeLineVectors(char** lineVectors, int numValues) {
         free(lineVectors[i]);
     }
     free(lineVectors);
+}
+
+void writeOutliers(FILE* file, char* url, int numLine, int isMissingTime, int nbOutliersX, int nbOutliersY, int nbOutliersZ, OUTLIER* pOutliersX, OUTLIER* pOutliersY, OUTLIER* pOutliersZ) {
+    // Write the URL in the file
+    fprintf(file, "%s,", url);
+    // Write numLine, isMissingTime, nbOutliersX in the file
+    fprintf(file, "%d,%d,%d", numLine, isMissingTime, nbOutliersX);
+
+    // Write the X outliers in the file
+    for (OUTLIER* outlier = pOutliersX; outlier != NULL; outlier = outlier->next) {
+        fprintf(file, ",%d, %f", outlier->line, outlier->vectorValue);
+    }
+
+    // Write the Y outliers in the file
+    fprintf(file, ",%d",nbOutliersY);
+    for (OUTLIER* outlier = pOutliersY; outlier != NULL; outlier = outlier->next) {
+        fprintf(file, ",%d, %f", outlier->line, outlier->vectorValue);
+    }
+
+    // Write the Z outliers in the file
+    fprintf(file, ",%d",nbOutliersZ);
+    for (OUTLIER* outlier = pOutliersZ; outlier != NULL; outlier = outlier->next) {
+        fprintf(file, ",%d, %f", outlier->line, outlier->vectorValue);
+    }
+
+    // Adds a new line at the end of the function
+    fprintf(file, "\n");
 }
