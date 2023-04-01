@@ -5,14 +5,6 @@
 #define URL_SIZE 17
 #define PATH_SIZE 38
 
-typedef struct vector VECTOR;
-struct vector {
-    char* name;
-    int numVectors;
-    struct outlier* startLine;
-    struct vector* next;
-};
-
 typedef struct outlier OUTLIER;
 struct outlier {
     int line;
@@ -22,6 +14,8 @@ struct outlier {
 
 void checkOutliers();
 void writeOutliers();
+char** getLineVectors(char* line);
+void freeLineVectors(char** lineVectors, int numValues);
 
 int main(){
     // 7 characters (the last character is reserved for the null character '\0' which marks the end of the string)
@@ -62,18 +56,35 @@ int main(){
                 exit(1);
             }
 
+            // initialization of the necessary variables
             int nbLine, time, missingTime = 0;
-            // int nbOutliersX, nbOutliersY, nbOutliersZ = 0;
+            int nbOutliersX, nbOutliersY, nbOutliersZ = 0;
+            OUTLIER* pStartOutliersX = malloc(sizeof(OUTLIER));
+            OUTLIER* pStartOutliersY = malloc(sizeof(OUTLIER));
+            OUTLIER* pStartOutliersZ = malloc(sizeof(OUTLIER));
 
             char line[MAX_SIZE];
-            fgets(line, MAX_SIZE, pFileSub); // we skip the first line
+            fgets(line, MAX_SIZE, pFileSub); // we skip the first line (the header)
 
             // we read the file line by line, beginning with the second line, until the end of the file
             while (fgets(line, MAX_SIZE, pFileSub) != NULL) { 
+                char** lineVectors = getLineVectors(line);
             }
 
             fclose(pFileSub);
         }
     }
     fclose(pFileOutliers);
+}
+
+
+char** getLineVectors(char* line){
+
+}
+
+void freeLineVectors(char** lineVectors, int numValues) {
+    for (int i = 0; i < numValues; i++) {
+        free(lineVectors[i]);
+    }
+    free(lineVectors);
 }
