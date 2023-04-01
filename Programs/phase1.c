@@ -12,9 +12,17 @@ struct outlier {
     struct outlier* next;
 };
 
+typedef struct LineVectors LINEVECTORS;
+struct LineVectors {
+    int time;
+    double vectorX;
+    double vectorY;
+    double vectorZ;
+};
+
 void checkOutliers();
 void writeOutliers();
-char** getLineVectors(char* line);
+LINEVECTORS getLineVectors(char* line);
 void freeLineVectors(char** lineVectors, int numValues);
 
 int main(){
@@ -68,7 +76,7 @@ int main(){
 
             // we read the file line by line, beginning with the second line, until the end of the file
             while (fgets(line, MAX_SIZE, pFileSub) != NULL) { 
-                char** lineVectors = getLineVectors(line);
+                LINEVECTORS lineVectors = getLineVectors(line);
             }
 
             fclose(pFileSub);
@@ -78,8 +86,18 @@ int main(){
 }
 
 
-char** getLineVectors(char* line){
+LINEVECTORS getLineVectors(char* line){
+    LINEVECTORS lineVectors;
 
+    char** values = extractValues(line);
+    lineVectors.time = atoi(values[0]);
+    lineVectors.vectorX = atof(values[10]);
+    lineVectors.vectorY = atof(values[11]);
+    lineVectors.vectorZ = atof(values[12]);
+
+    freeValues(values);
+
+    return lineVectors;
 }
 
 void freeLineVectors(char** lineVectors, int numValues) {
