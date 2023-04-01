@@ -1,9 +1,27 @@
 #include<stdio.h>
 #include<string.h>
 
-#define MAX_SIZE 101
+#define MAX_SIZE 201
 #define URL_SIZE 17
 #define PATH_SIZE 38
+
+typedef struct vector VECTOR;
+struct vector {
+    char* name;
+    int numVectors;
+    struct outlier* startLine;
+    struct vector* next;
+};
+
+typedef struct outlier OUTLIER;
+struct outlier {
+    int line;
+    double vectorValue;
+    struct outlier* next;
+};
+
+void checkOutliers();
+void writeOutliers();
 
 int main(){
     // 7 characters (the last character is reserved for the null character '\0' which marks the end of the string)
@@ -15,20 +33,13 @@ int main(){
         "ups_3/","ups_4/","ups_12/",
         "wlk_7/","wlk_8/","wlk_15/"
     };
-    
-    double vectorXOutliers[MAX_SIZE];
-    double vectorYOutliers[MAX_SIZE];
-    double vectorZOutliers[MAX_SIZE];
-    int vectorXOutlierLines[MAX_SIZE];
-    int vectorYOutlierLines[MAX_SIZE];
-    int vectorZOutlierLines[MAX_SIZE];
 
     // opening the review file with the pFileOutliers pointer
     FILE *pFileOutliers = fopen("../Data/review_outliers.csv", "a");
 
     // checking if the file is opened
     if (pFileOutliers == NULL) {
-        perror("Unable to open the file");
+        perror("Unable to open the file: review_outliers.csv");
         exit(1);
     }
 
@@ -36,22 +47,33 @@ int main(){
     for (int iMovement = 0; iMovement < 15; iMovement++){
         // We run through our 24 movements (sub)
         for (int iSub = 1; iSub <= 24; iSub++){
+            // create the url of the file
             char url[URL_SIZE];
             snprintf(url, URL_SIZE, "%s%s%d.csv", paths[iMovement], "sub", iSub);
             
+            // create the path of the file combining the url and the path
             char filePath[PATH_SIZE] = "../Data/DeviceMotion/";
             strcat(filePath, url);
 
-            // opening the sub file with the pFileSub pointer
-            FILE *pFileSub = fopen(filePath, "r");
-
+            FILE *pFileSub = fopen(filePath, "r"); // opening the sub file with the pFileSub pointer
             // checking if the file is opened
             if (pFileSub == NULL) {
-                perror("Unable to open the file");
+                printf("Unable to open the file: %s", url);
                 exit(1);
             }
 
+            int nbLine, time, missingTime = 0;
+            // int nbOutliersX, nbOutliersY, nbOutliersZ = 0;
 
+            char line[MAX_SIZE];
+            fgets(line, MAX_SIZE, pFileSub); // we skip the first line
+
+            // we read the file line by line, beginning with the second line, until the end of the file
+            while (fgets(line, MAX_SIZE, pFileSub) != NULL) { 
+            }
+
+            fclose(pFileSub);
         }
     }
+    fclose(pFileOutliers);
 }
