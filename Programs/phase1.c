@@ -1,10 +1,13 @@
+// include
 #include<stdio.h>
 #include<string.h>
 
-#define MAX_SIZE 201
+// define
+#define MAX_SIZE 301
 #define URL_SIZE 17
 #define PATH_SIZE 38
 
+// struct
 typedef struct outlier OUTLIER;
 struct outlier {
     int line;
@@ -20,11 +23,12 @@ struct LineVectors {
     double vectorZ;
 };
 
-void checkOutliers();
+// function prototypes
+void checkOutliers(OUTLIER **pStartOutliersX, OUTLIER **pStartOutliersY, OUTLIER **pStartOutliersZ, OUTLIER **pOutliersX, OUTLIER **pOutliersY, OUTLIER **pOutliersZ, int *nbOutliersX, int *nbOutliersY, int *nbOutliersZ, LINE_VECTORS lineVectors);
 void writeOutliers(FILE* file, char* url, int numLine, int isMissingTime, int nbOutliersX, int nbOutliersY, int nbOutliersZ, OUTLIER* pOutliersX, OUTLIER* pOutliersY, OUTLIER* pOutliersZ);
-LINE_VECTORS getLineVectors(char* line);
-void freeLineVectors(char** lineVectors, int numValues);
+LINE_VECTORS getLineVectors(char* line);    
 
+// main program
 int main(){
     // 7 characters (the last character is reserved for the null character '\0' which marks the end of the string)
     char paths[15][8] = {
@@ -68,9 +72,14 @@ int main(){
             int nbLine, isMissingTime = 0;
             int previousTime = -1;
             int nbOutliersX, nbOutliersY, nbOutliersZ = 0;
+            // we create the first element of the linked list of outliers
             OUTLIER* pStartOutliersX = malloc(sizeof(OUTLIER));
             OUTLIER* pStartOutliersY = malloc(sizeof(OUTLIER));
             OUTLIER* pStartOutliersZ = malloc(sizeof(OUTLIER));
+            // we initialize the pointers that will be used to add new elements to the linked list
+            OUTLIER* pOutliersX = pStartOutliersX;
+            OUTLIER* pOutliersY = pStartOutliersY;
+            OUTLIER* pOutliersZ = pStartOutliersZ;
 
             char line[MAX_SIZE];
             fgets(line, MAX_SIZE, pFileSub); // we skip the first line (the header)
@@ -84,7 +93,7 @@ int main(){
                 }
                 previousTime = lineVectors.time;
 
-                // findOutliers
+                // checkOutliers()
 
                 nbLine++;
             }
@@ -97,25 +106,30 @@ int main(){
 }
 
 
+// function definitions
 LINE_VECTORS getLineVectors(char* line){
-    LINE_VECTORS lineVectors;
+   LINE_VECTORS data;
 
-    char** values = extractValues(line);
-    lineVectors.time = atoi(values[0]);
-    lineVectors.vectorX = atof(values[10]);
-    lineVectors.vectorY = atof(values[11]);
-    lineVectors.vectorZ = atof(values[12]);
+    char* token = strtok(line, ",");
+    data.time = atoi(token);
 
-    freeValues(values);
-
-    return lineVectors;
-}
-
-void freeLineVectors(char** lineVectors, int numValues) {
-    for (int i = 0; i < numValues; i++) {
-        free(lineVectors[i]);
+    for (int i = 1; i <= 10; i++) {
+        token = strtok(NULL, ",");
+        if (i == 10) {
+            token = strtok(NULL, ",");
+            token = strtok(NULL, ",");
+            token = strtok(NULL, ",");
+            data.vectorX = atof(token);
+        } else if (i == 11) {
+            token = strtok(NULL, ",");
+            data.vectorY = atof(token);
+        } else if (i == 12) {
+            token = strtok(NULL, ",");
+            data.vectorZ = atof(token);
+        }
     }
-    free(lineVectors);
+
+    return data;
 }
 
 void writeOutliers(FILE* file, char* url, int numLine, int isMissingTime, int nbOutliersX, int nbOutliersY, int nbOutliersZ, OUTLIER* pOutliersX, OUTLIER* pOutliersY, OUTLIER* pOutliersZ) {
@@ -143,4 +157,8 @@ void writeOutliers(FILE* file, char* url, int numLine, int isMissingTime, int nb
 
     // Adds a new line at the end of the function
     fprintf(file, "\n");
+}
+
+void checkOutliers(OUTLIER **pStartOutliersX, OUTLIER **pStartOutliersY, OUTLIER **pStartOutliersZ, OUTLIER **pOutliersX, OUTLIER **pOutliersY, OUTLIER **pOutliersZ, int *nbOutliersX, int *nbOutliersY, int *nbOutliersZ, LINE_VECTORS lineVectors){
+
 }
