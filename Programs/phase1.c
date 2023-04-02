@@ -1,13 +1,13 @@
-// include
+// include libraires
 #include<stdio.h>
 #include<string.h>
 
-// define
+// define constants
 #define MAX_SIZE 301
 #define URL_SIZE 17
 #define PATH_SIZE 38
 
-// struct
+// struct definition
 typedef struct outlier OUTLIER;
 struct outlier {
     int line;
