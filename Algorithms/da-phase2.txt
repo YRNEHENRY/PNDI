@@ -1,0 +1,56 @@
+module(main;;)
+---*
+pTrainSet = open "trainSet.csv"
+if (pTrainSet == null)
+print ("Error opening the training set csv!")
+exit
+endif
+
+pPatterns = open "patterns.csv"
+if (pPatterns == null)
+print ("Error opening the patterns csv!")
+exit
+endif
+
+movement = line.getMovement()
+
+while (!feof(pTrainSet))
+actualMovement = movement
+vAccs[2][1000]
+
+while (actualMovement = movement)
+
+module(getVAcc;vAccs, pTrainSet;vAccs)
+
+movement = line.getMovement()
+endwhile
+
+module(calculMeans;vAccs, movement;)
+endwhile
+
+
+close "patterns.csv"
+close "trainSet.csv"
+------
+
+module(getVAcc;vAccs, pTrainSet;vAccs)
+---*
+i = 0
+while (i < 1000)
+pTrainSet = pTrainSet.next
+if (pTrainSet != 0)
+vAccs[0][i] += pTrainSet
+vAccs[1][i] += 1
+endif
+endwhile
+------
+
+module(calculMeans;vAccs, movement;)
+---*
+i = 0
+while (i < 1000)
+vAccs[0][i] = vAccs[0][i] / vAccs[1][i]
+endwhile
+
+module(saveInFile;movement, vAccs;)
+------
