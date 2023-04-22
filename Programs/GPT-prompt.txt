@@ -1,0 +1,60 @@
+J'ai un programme que j'aimerai que tu rédiges en C.
+
+J'ai un fichier csv qui comprends dans chaque ligne, en premier un nombre de 1 à 6 compris (qui correspond à un mouvement) suivit d'une virgule puis de 1000 nombres chacun délimité chacun par des virgules également.
+
+Le main programme suit ce pseudo-code :
+
+On ouvre le fichier "trainSet.csv" et on le stocke dans pTrainSet
+Si le pTrainSet vaut null :
+On imprime une erreur et on exit
+fin du si
+
+On ouvre le fichier "patterns.csv" et on le stocke dans pPatterns
+Si le pPatterns vaut null :
+On imprime une erreur et on exit
+fin du si
+
+On va ensuite stocker dans "movement" notre premier nombre dans le pTrainSet
+
+Début du while (while (!feof(pTrainSet))
+
+On va stocker notre "movement" dans "actualMovement"
+Ensuite on va créer un double tableau vAccs[2][1000]
+
+Début du while (while(actualMovement = movement))
+
+On va appeler notre fonction "getVaccs" (que je t'explique plus bas)
+On passe ensuite à la ligne suivante de notre csv pTrainSet et on y stocke notre nouveau mouvement dans "movement"
+
+Fin du while (while(actualMovement = movement))
+
+On fait appelle à notre fonction "calculMeans" (que je t'explique plus bas également)
+
+fin du while  (while (!feof(pTrainSet))
+
+On ferme nos deux fichiers csv.
+
+Fin du main programme
+
+
+Début de la fonction "getVAcc" qui prend en paramètres notre tableau vAccs et notre pTrainSet :
+On possède une boucle while tant que i < 1000
+Si la valeur dans pTrainSet est différente de 0
+vAccs[0][i] += la valeur de pTrainSet
+vAccs[1][i] += 1
+fin du si
+Fin de la fonction
+
+Début de la fonction "calculMeans" qui prend en paramètres notre tableau vAccs, movement et pPatterns :
+On enregistre notre movement dans notre fichier avec pPatterns
+On a un while i < 1000 avec dedans :
+on enregistre dans notre fichier ( vAccs[0][i] / vAccs[1][I]) précédé d'une virgule
+fin du while
+Fin de la fonction
+
+
+
+
+
+2eme prompt :
+Dans mon programme, peux-tu changer mes while i < 1000 en boucle for ?
