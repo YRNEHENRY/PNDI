@@ -5,7 +5,7 @@
 
 // define constants
 #define MAX_SIZE 301
-#define URL_SIZE 17
+#define URL_SIZE 18
 #define PATH_SIZE 38
 
 // struct definition
@@ -62,7 +62,7 @@ int main(){
         for (int iSub = 1; iSub <= 24; iSub++){
             // create the url of the file
             char url[URL_SIZE];
-            snprintf(url, URL_SIZE, "%s%s%d.csv", paths[iMovement], "sub", iSub);
+            snprintf(url, URL_SIZE, "%s%s%d.csv", paths[iMovement], "sub_", iSub);
             
             // create the path of the file combining the url and the path
             char filePath[PATH_SIZE] = "../Data/DeviceMotion/";
