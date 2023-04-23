@@ -1,0 +1,9 @@
+Ecris moi un script en C qui :
+ouvre un fichier dont le chemin est ../Data/trainSet.csv
+ensuite
+ouvre un fichier dont le chemin est ../Data/patterns.csv
+ensuite
+Il faut lire ligne par ligne le contenu du fichier trainSet (penser a passer la premier ligne car cest l'entete du csv)
+Les lignes du fichier trainSet.csv sont : le numéro du mouvements, ensuite 1000 cellules de nombres réels
+Le but du script est donc d'écrire dans patterns.csv par mouvement unique : le numéro du mouvements, ensuite 1000 cellules des moyennes obtenues pour ce mouvement.
+A savoir que les mouvements dans trainSet.csv sont stockés par bloc, cest à dire que nous rencontrons tous les mouvement "1" d'un coup puis tous les mouvements "3" par exemple
