@@ -1,0 +1,71 @@
+J'ai un programme que j'aimerai que tu rédiges en C.
+
+J'ai un fichier csv qui comprends dans chaque ligne, en premier un nombre de 1 à 6 compris (qui correspond à un mouvement)
+suivit d'une virgule puis de 1000 nombres chacun délimité chacun par des virgules également.
+
+On possède une structure :
+vAcc qui contient :
+count en int
+summary en double
+
+Le main programme suit ce pseudo-code :
+
+On ouvre le fichier "trainSet.csv" et on le stocke dans pTrainSet
+Si le pTrainSet vaut null :
+On imprime une erreur et on exit
+fin du si
+
+On ouvre le fichier "patterns.csv" et on le stocke dans pPatterns
+Si le pPatterns vaut null :
+On imprime une erreur et on exit
+fin du si
+
+On imprime dans le fichier patterns comme première ligne l'en-tête : 'movement' suivi de 1000 ', vAccs'
+
+On va passer la première ligne de pTrainSet qui contient notre header
+Ensuite on va stocker dans "movement" notre premier nombre dans le pTrainSet (qui correspond alors au mouvement)
+
+Début du while (while (!feof(pTrainSet)))
+
+    On va stocker notre "movement" dans "actualMovement"
+    Ensuite on va créer un tableau de notre structure vAcc : vAccs[1000]
+
+    Début du while (while(actualMovement = movement))
+
+        On va appeler notre fonction "getVaccs" (que je t'explique plus bas)
+        On passe ensuite à la ligne suivante de notre csv pTrainSet et on y stocke notre nouveau mouvement dans "movement"
+
+    Fin du while (while(actualMovement = movement))
+
+    On fait appelle à notre fonction "calculMeansAndSaveFile" (que je t'explique plus bas également)
+
+fin du while  (while (!feof(pTrainSet)))
+
+On ferme nos deux fichiers csv.
+
+Fin du main programme
+
+
+Début de la fonction "getVAcc" qui prend en paramètres notre tableau vAccs et notre pTrainSet :
+On possède une boucle while tant que i < 1000
+Si la valeur dans pTrainSet est différente de 0
+    vAccs[i].summary += la valeur de pTrainSet
+    vAccs[i].count += 1
+fin du si
+Fin de la fonction
+
+Début de la fonction "calculMeansAndSaveFile" qui prend en paramètres notre tableau vAccs, movement et pPatterns :
+On enregistre notre movement dans notre fichier avec pPatterns
+On a un while i < 1000 avec dedans :
+    on enregistre dans notre fichier ( vAccs[i].summary / vAccs[i].count) précédé d'une virgule
+fin du while
+Fin de la fonction
+
+
+
+
+Prompt 2 :
+peux-tu me refaire le programme en sachant que le int summary est un double ?
+
+Prompt 3 : 
+Merci
