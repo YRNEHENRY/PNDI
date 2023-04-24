@@ -23,29 +23,43 @@ int main() {
     char line[MAX_LINE_LENGTH];
     fgets(line, MAX_LINE_LENGTH, trainSetFile); // Lecture de la première ligne (entête)
     while (fgets(line, MAX_LINE_LENGTH, trainSetFile)) {
-        // Extraction du numéro de mouvement et de la première cellule de la ligne
+        // Extraction du numéro de mouvement et des cellules de la ligne
         char* token = strtok(line, ",");
         int movement = atoi(token);
         token = strtok(NULL, ",");
         float value = atof(token);
 
-        // Si on commence un nouveau mouvement, on écrit la moyenne du précédent dans patterns.csv
-        if (movement != currentMovement && count > 0) {
-            fprintf(patternsFile, "%d,", currentMovement);
-            for (int i = 0; i < 999; i++) {
-                fprintf(patternsFile, "%f,", currentSum / count);
+        // Vérification si la ligne contient des 0 dans les cellules
+        int hasZero = 0;
+        for (int i = 1; i < 1000; i++) {
+            token = strtok(NULL, ",");
+            float value = atof(token);
+            if (value == 0) {
+                hasZero = 1;
+                break;
             }
-            fprintf(patternsFile, "%f\n", currentSum / count);
-
-            // Réinitialisation des variables pour le nouveau mouvement
-            currentMovement = movement;
-            currentSum = 0;
-            count = 0;
         }
 
-        // Ajout de la valeur à la somme en cours pour le mouvement actuel
-        currentSum += value;
-        count++;
+        // Si la ligne ne contient pas de 0, on calcule la moyenne pour le mouvement actuel
+        if (!hasZero) {
+            // Si on commence un nouveau mouvement, on écrit la moyenne du précédent dans patterns.csv
+            if (movement != currentMovement && count > 0) {
+                fprintf(patternsFile, "%d,", currentMovement);
+                for (int i = 0; i < 999; i++) {
+                    fprintf(patternsFile, "%f,", currentSum / count);
+                }
+                fprintf(patternsFile, "%f\n", currentSum / count);
+
+                // Réinitialisation des variables pour le nouveau mouvement
+                currentMovement = movement;
+                currentSum = 0;
+                count = 0;
+            }
+
+            // Ajout de la valeur à la somme en cours pour le mouvement actuel
+            currentSum += value;
+            count++;
+        }
     }
 
     // Écriture de la dernière moyenne dans patterns.csv

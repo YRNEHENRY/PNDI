@@ -7,3 +7,6 @@ Il faut lire ligne par ligne le contenu du fichier trainSet (penser a passer la 
 Les lignes du fichier trainSet.csv sont : le numéro du mouvements, ensuite 1000 cellules de nombres réels
 Le but du script est donc d'écrire dans patterns.csv par mouvement unique : le numéro du mouvements, ensuite 1000 cellules des moyennes obtenues pour ce mouvement.
 A savoir que les mouvements dans trainSet.csv sont stockés par bloc, cest à dire que nous rencontrons tous les mouvement "1" d'un coup puis tous les mouvements "3" par exemple
+
+Sur base du meme programme que tu as écris, ajuste le pour que lorsqu'une ligne de trainset.csv contient 
+des 0 dans les 1000 cellules, cette ligne n'est pas prise en compte et est donc passé à la suivante
