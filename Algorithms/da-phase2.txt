@@ -1,3 +1,7 @@
+//  Struct vAcc{
+//      count   int
+//      summary double
+
 module(main;;)
 ---*
 pTrainSet = open "trainSet.csv"
@@ -15,8 +19,9 @@ endif
 movement = line.getMovement()
 
 while (!feof(pTrainSet))
+
 actualMovement = movement
-vAccs[2][1000]
+vAccs = {0}
 
 while (actualMovement = movement)
 
@@ -39,9 +44,10 @@ i = 0
 while (i < 1000)
 pTrainSet = pTrainSet.next
 if (pTrainSet != 0)
-vAccs[0][i] += pTrainSet
-vAccs[1][i] += 1
+vAccs[i].summary += pTrainSet
+vAccs[i].count++
 endif
+i++
 endwhile
 ------
 
@@ -49,8 +55,7 @@ module(calculMeans;vAccs, movement;)
 ---*
 i = 0
 while (i < 1000)
-vAccs[0][i] = vAccs[0][i] / vAccs[1][i]
+print in file : vAccs[i].summary / vAcss[i].count
+i++
 endwhile
-
-module(saveInFile;movement, vAccs;)
 ------
