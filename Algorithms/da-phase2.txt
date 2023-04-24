@@ -1,6 +1,7 @@
-//  Struct vAcc{
+//  Struct vAcc {
 //      count   int
 //      summary double
+//  }
 
 module(main;;)
 ---*
@@ -16,6 +17,7 @@ print ("Error opening the patterns csv!")
 exit
 endif
 
+skip first line of pTrainSet
 movement = line.getMovement()
 
 while (!feof(pTrainSet))
@@ -30,7 +32,7 @@ module(getVAcc;vAccs, pTrainSet;vAccs)
 movement = line.getMovement()
 endwhile
 
-module(calculMeans;vAccs, movement;)
+module(calculMeansAndSaveInFile;vAccs, movement;)
 endwhile
 
 
@@ -51,7 +53,7 @@ i++
 endwhile
 ------
 
-module(calculMeans;vAccs, movement;)
+module(calculMeansAndSaveInFile;vAccs, movement;)
 ---*
 i = 0
 while (i < 1000)
