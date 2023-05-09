@@ -22,14 +22,14 @@ int main() {
     // opening the trainSet.csv file (in read mode) with the pointer pTrainSet
     FILE *pTrainSet = fopen(TRAIN_SET, "r");
     if (pTrainSet == NULL) {
-        printf("Erreur : Impossible d'ouvrir le fichier trainSet.csv\n");
+        printf("ERROR: Enable to open the `trainSet.csv` file\n");
         return 1;
     }
 
     // opening the patterns.csv file (in write mode) with the pointer pPatterns
     FILE *pPatterns = fopen(PATTERNS, "w");
     if (pPatterns == NULL) {
-        printf("Erreur : Impossible d'ouvrir le fichier patterns.csv\n");
+        printf("ERROR: Enable to open the `patterns.csv` file\n");
         fclose(pTrainSet);
         return 1;
     }
@@ -41,14 +41,16 @@ int main() {
     }
     fprintf(pPatterns, "\n");
 
-    // reading the trainSet.csv file and putting the current movement in the variable movement
+    // reading the trainSet.csv file and putting the current movement in the variable `movement`
     int movement, actualMovement;
     fscanf(pTrainSet, "%d,", &movement);
     
+    // while the end of the file is not reached
     while (!feof(pTrainSet)) {
         actualMovement = movement;
         VACC vAccs[MAX_VACCS] = {0};
 
+        // while the current movement is the same as the previous one: we add the values of the vAccs to the structure
         while (actualMovement == movement) {
             getVAcc(vAccs, pTrainSet);
             fscanf(pTrainSet, "%d", &movement);
@@ -57,12 +59,20 @@ int main() {
         calculMeansAndSaveFile(vAccs, movement, pPatterns);
     }
 
+    // closing the files
     fclose(pTrainSet);
     fclose(pPatterns);
     return 0;
 }
 
 // define functions
+
+/*
+    Add the values of the vAccs to the structure
+
+    :param vAccs: the structure
+    :param pTrainSet: the pointer to the trainSet.csv file
+*/
 void getVAcc(VACC vAccs[], FILE *pTrainSet) {
     int value;
     for(int i = 0; i < MAX_VACCS; i++) {
@@ -74,6 +84,10 @@ void getVAcc(VACC vAccs[], FILE *pTrainSet) {
     }
 }
 
+
+/*
+    Calculate the means of the vAccs and save them in the patterns.csv file
+*/ 
 void calculMeansAndSaveFile(VACC vAccs[], int movement, FILE *pPatterns) {
     fprintf(pPatterns, "%d", movement);
     for (int i = 0; i < MAX_VACCS; i++) {
