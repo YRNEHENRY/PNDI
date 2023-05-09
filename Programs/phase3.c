@@ -7,7 +7,7 @@
 #define NB_MOVEMENTS 32
 
 // function prototypes
-void loadModels(float models[][TAB_SIZE]);
+void loadModels(float (*models)[6][TAB_SIZE]);
 void loadTest(FILE *pTestSet, float *vAccs[TAB_SIZE], int *realClasses[NB_MOVEMENTS], int nbMovements);
 void findModel(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int *realClasses[NB_MOVEMENTS], int *estimatedClasses[NB_MOVEMENTS], int nbMovements);
 float euclidianDistance(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int movement);
@@ -50,13 +50,28 @@ int main(){
     @param models: the models of the movements
     @return: the vAccs of the models for each movement
 */
-void loadModels(float models[][TAB_SIZE]){
+void loadModels(float (*models)[6][TAB_SIZE]){
     FILE *pModels = fopen("../Data/models.csv", "r");
     if (pModels == NULL) {
         perror("Unable to open the file: models.csv");
         exit(1);
     }
 
+    // initialization of the necessary variables
+    int movement;
+    float vAcc;
+
+    fscanf(pModels, "%*[^\n]\n"); // skipping the first line of the file
+
+    // for each movement / read the file line by line
+    while (fscanf(pModels, "%d,", &movement) == 1) {
+        movement--; // adujsting the movement number
+        for (int i = 0; i < TAB_SIZE; i++) {
+            // getting the vAccs
+            fscanf(pModels, "%f,", &vAcc);
+            (*models)[movement][i] = vAcc;
+        }
+    }
     
     fclose(pModels);
 }
