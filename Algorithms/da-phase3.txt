@@ -1,0 +1,96 @@
+DEFINE TAB_SIZE 1000
+DEFINE NB_MOVEMENTS 32
+
+module(main;;)
+---*
+pTestSet = open "testSet.csv"
+if (pTestSet == null)
+print ("Error opening the test set csv!")
+exit
+endif
+
+models[6][TAB_SIZE] = {}
+realClasses[NB_MOVEMENTS] = {}
+estimatedClasses[NB_MOVEMENTS] = {}
+nbMovements = 0
+
+module(loadModels;models;models)
+
+while(nbMovements < 32)
+module(loadTest;pTestSet, vAccs, realClasses, nbMovements;vAccs, realClasses)
+module(findModel;models, vAccs, estimatedClasses, nbMovements;estimatedClasses, nbMovements)
+
+nbMovements++
+endwhile
+
+module(displayResultsForEachClass;realClasses, estimatedClasses, nbTests;)
+module(displayAccuracy;realClasses, estimatedClasses, nbTests;)
+module(displayClass;realClasses, estimatedClasses, nbTests;)
+------
+
+module(loadModels;models;models)
+---*
+pModel = open "model.csv"
+if (pModel == null)
+print ("Error opening the model csv!")
+exit
+endif
+
+skip first line of pModel
+while (!feof(pModel))
+pModel.getMovement()
+i = 0
+while (i < TAB_SIZE)
+models[movement - 1][i] = pModel.getVAcc()
+i++
+endwhile
+endwhile
+
+close pModel
+------
+
+module(loadTest;pTestSet, vAccs, realClasses, nbMovements;vAccs, realClasses)
+---*
+realClasses[nbMovements] = nbMovements
+
+i = 0
+while (i < TAB_SIZE)
+vAccs[i] = pTestSet.getVAcc()
+i++
+endwhile
+------
+
+module(euclidianDistance;models, vAccs, movement;distance)
+---*
+distance = 0
+i = 0
+while (i < TAB_SIZE)
+distance += (models[movement][i] - vAccs[i])**2
+i++
+endwhile
+
+distance = sqrt(distance)
+------
+
+module(findModel;models, vAccs, estimatedClasses, nbMovements;estimatedClasses, nbMovements)
+---*
+estimation
+bestEuclidianDistance = MAX
+i = 0
+while(i < 6)
+module(euclidianDistance;models, vAccs, i;euclidianDistance)
+
+if(bestEuclidianDistance > euclidianDistance)
+estimation = i+1
+bestEuclidianDistance = euclidianDistance
+endif
+i++
+endwhile
+
+estimatedClasses[nbMovements] = estimation
+------
+
+// gived with biblio
+module(displayResultsForEachClass;realClasses, estimatedClasses, nbTests;)
+module(displayAccuracy;realClasses, estimatedClasses, nbTests;)
+module(displayClass;realClasses, estimatedClasses, nbTests;)
