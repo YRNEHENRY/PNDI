@@ -15,7 +15,7 @@ float euclidianDistance(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int mov
 // main program
 int main(){
     // opening the test set file with the pTestSet pointer
-    FILE *pTestSet = fopen("../Data/testSet.csv", "r");
+    FILE *pTestSet = fopen("../Data/Sets/testSet.csv", "r");
 
     // checking if the file is opened
     if (pTestSet == NULL) {
@@ -51,7 +51,7 @@ int main(){
     @return: the vAccs of the models for each movement
 */
 void loadModels(float (*models)[6][TAB_SIZE]){
-    FILE *pModels = fopen("../Data/models.csv", "r");
+    FILE *pModels = fopen("../Data/Sets/models.csv", "r");
     if (pModels == NULL) {
         perror("Unable to open the file: models.csv");
         exit(1);

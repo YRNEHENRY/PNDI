@@ -1,5 +1,5 @@
-DEFINE TAB_SIZE 1000
-DEFINE NB_MOVEMENTS 32
+define TAB_SIZE 1000
+define NB_MOVEMENTS 32
 
 module(main;;)
 ---*
@@ -10,6 +10,7 @@ exit
 endif
 
 models[6][TAB_SIZE] = {}
+vAccs[TAB_SIZE] = {}
 realClasses[NB_MOVEMENTS] = {}
 estimatedClasses[NB_MOVEMENTS] = {}
 nbMovements = 0
