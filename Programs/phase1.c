@@ -34,8 +34,8 @@ struct LineVectors {
 };
 
 // function prototypes
-void checkOutliers(OUTLIER **pStartOutliersX, OUTLIER **pStartOutliersY, OUTLIER **pStartOutliersZ, OUTLIER **pOutliersX, OUTLIER **pOutliersY, OUTLIER **pOutliersZ, int *nbOutliersX, int *nbOutliersY, int *nbOutliersZ, LINE_VECTORS lineVectors, double thresholds[3][2]);
-void writeOutliers(FILE* file, char* url, int numLine, int isMissingTime, int nbOutliersX, int nbOutliersY, int nbOutliersZ, OUTLIER* pOutliersX, OUTLIER* pOutliersY, OUTLIER* pOutliersZ);
+void checkOutliers(OUTLIER **pStartOutliersX, OUTLIER **pStartOutliersY, OUTLIER **pStartOutliersZ, OUTLIER **pOutliersX, OUTLIER **pOutliersY, OUTLIER **pOutliersZ, int *nbOutliersX, int *nbOutliersY, int *nbOutliersZ, LINE_VECTORS lineVectors);
+void writeOutliers(FILE* file, char* url, int numLine, int isMissingTime, int nbOutliersX, int nbOutliersY, int nbOutliersZ, OUTLIER* pStartOutlierX, OUTLIER* pStartOutlierY, OUTLIER* pStartOutlierZ);
 LINE_VECTORS getLineVectors(char* line);    
 
 // main program
@@ -48,12 +48,6 @@ int main(){
         "std_6/","std_14/",
         "ups_3/","ups_4/","ups_12/",
         "wlk_7/","wlk_8/","wlk_15/"
-    };
-    // thresholds for the 3 vectors to detect outliers
-    double thresholds[3][2] = {
-        {0.00096087 - 3* 0.38875666, 0.00096087 + 3* 0.38875666},
-        {0.05525659 - 3* 0.61937128, 0.05525659 + 3* 0.61937128},
-        {0.0352192 - 3* 0.4300345,0.0352192 + 3* 0.4300345}
     };
 
     // opening the review file with the pFileOutliers pointer
@@ -111,7 +105,7 @@ int main(){
                 previousTime = lineVectors.time;
 
                 // we check if there are outliers
-                checkOutliers(&pStartOutliersX, &pStartOutliersY, &pStartOutliersZ, &pOutliersX, &pOutliersY, &pOutliersZ, &nbOutliersX, &nbOutliersY, &nbOutliersZ, lineVectors, thresholds);
+                checkOutliers(&pStartOutliersX, &pStartOutliersY, &pStartOutliersZ, &pOutliersX, &pOutliersY, &pOutliersZ, &nbOutliersX, &nbOutliersY, &nbOutliersZ, lineVectors);
 
                 nbLine++;
             }
@@ -126,6 +120,12 @@ int main(){
 
 
 // function definitions
+/*
+    This function get the time, vectorX, vectorY and vectorZ values of a line in the csv file
+
+    @param line: the line of the csv file
+    @return data: the time, vectorX, vectorY and vectorZ values of the line
+*/
 LINE_VECTORS getLineVectors(char* line) {
     LINE_VECTORS data;
 
@@ -135,85 +135,128 @@ LINE_VECTORS getLineVectors(char* line) {
     return data;
 }
 
-void writeOutliers(FILE* file, char* url, int numLine, int isMissingTime, int nbOutliersX, int nbOutliersY, int nbOutliersZ, OUTLIER* pOutliersX, OUTLIER* pOutliersY, OUTLIER* pOutliersZ) {
+/*
+    This function takes all the informations of the csvs and write in a review file all the outliers
+
+    @param file: the review file
+    @param url: the url of the csv file
+    @param numLine: the number of lines of the csv file
+    @param isMissingTime: 1 if there is a missing time, 0 otherwise
+    @param nbOutliersX: the number of outliers in the X vector
+    @param nbOutliersY: the number of outliers in the Y vector
+    @param nbOutliersZ: the number of outliers in the Z vector
+    @param pStartOutlierX: the pointer to the first outlier of the X vector to write in the review file
+    @param pStartOutlierY: the pointer to the first outlier of the Y vector to write in the review file
+    @param pStartOutlierZ: the pointer to the first outlier of the Z vector to write in the review file
+*/
+void writeOutliers(FILE* file, char* url, int numLine, int isMissingTime, int nbOutliersX, int nbOutliersY, int nbOutliersZ, OUTLIER* pStartOutlierX, OUTLIER* pStartOutlierY, OUTLIER* pStartOutlierZ) {
     // Write the URL in the file
     fprintf(file, "%s,", url);
     // Write numLine, isMissingTime, nbOutliersX in the file
     fprintf(file, "%d,%d,%d", numLine, isMissingTime, nbOutliersX);
 
     // Write the X outliers in the file
-    for (OUTLIER* outlier = pOutliersX; outlier != NULL; outlier = outlier->next) {
-        fprintf(file, ",%d, %f", outlier->line, outlier->vectorValue);
+    OUTLIER* outlierX = pStartOutlierX;
+    while (outlierX != NULL) {
+        fprintf(file, ",%d,%f", outlierX->line, outlierX->vectorValue);
+        OUTLIER* nextX = outlierX->next;
+        free(outlierX); // free the current outlierX
+        outlierX = nextX; // move to the next outlierX
     }
 
     // Write the Y outliers in the file
-    fprintf(file, ",%d",nbOutliersY);
-    for (OUTLIER* outlier = pOutliersY; outlier != NULL; outlier = outlier->next) {
-        fprintf(file, ",%d, %f", outlier->line, outlier->vectorValue);
+    fprintf(file, ",%d", nbOutliersY);
+    OUTLIER* outlierY = pStartOutlierY;
+    while (outlierY != NULL) {
+        fprintf(file, ",%d,%f", outlierY->line, outlierY->vectorValue);
+        OUTLIER* nextY = outlierY->next;
+        free(outlierY); // free the current outlierY
+        outlierY = nextY; // move to the next outlierY
     }
 
     // Write the Z outliers in the file
-    fprintf(file, ",%d",nbOutliersZ);
-    for (OUTLIER* outlier = pOutliersZ; outlier != NULL; outlier = outlier->next) {
-        fprintf(file, ",%d, %f", outlier->line, outlier->vectorValue);
+    fprintf(file, ",%d", nbOutliersZ);
+    OUTLIER* outlierZ = pStartOutlierZ;
+    while (outlierZ != NULL) {
+        fprintf(file, ",%d,%f", outlierZ->line, outlierZ->vectorValue);
+        OUTLIER* nextZ = outlierZ->next;
+        free(outlierZ); // free the current outlierZ
+        outlierZ = nextZ; // move to the next outlierZ
     }
 
     // Adds a new line at the end of the function
     fprintf(file, "\n");
 }
 
-void checkOutliers(OUTLIER **pStartOutliersX, OUTLIER **pStartOutliersY, OUTLIER **pStartOutliersZ, OUTLIER **pOutliersX, OUTLIER **pOutliersY, OUTLIER **pOutliersZ, int *nbOutliersX, int *nbOutliersY, int *nbOutliersZ, LINE_VECTORS lineVectors, double thresholds[3][2]){
-    // check if the vector X is an outlier
-    if (lineVectors.vectorX < thresholds[0][0] || lineVectors.vectorX > thresholds[0][1]) {
-        // if it is the first outlier, we initialize the first element of the linked list
-        if (*nbOutliersX == 0) {
-            (*pStartOutliersX)->line = lineVectors.time;
-            (*pStartOutliersX)->vectorValue = lineVectors.vectorX;
-            (*pStartOutliersX)->next = NULL;
+/*
+    Check if there are outliers in the line and add them to the linked list of outliers
+
+    @param pStartOutliersX: pointer to the first element of the linked list of outliers in X
+    @param pStartOutliersY: pointer to the first element of the linked list of outliers in Y
+    @param pStartOutliersZ: pointer to the first element of the linked list of outliers in Z
+    @param pOutliersX: pointer to the last element of the linked list of outliers in X
+    @param pOutliersY: pointer to the last element of the linked list of outliers in Y
+    @param pOutliersZ: pointer to the last element of the linked list of outliers in Z
+    @param nbOutliersX: number of outliers in X
+    @param nbOutliersY: number of outliers in Y
+    @param nbOutliersZ: number of outliers in Z
+    @param lineVectors: structure containing the values of the line
+*/
+void checkOutliers(OUTLIER **pStartOutliersX, OUTLIER **pStartOutliersY, OUTLIER **pStartOutliersZ, OUTLIER **pOutliersX, OUTLIER **pOutliersY, OUTLIER **pOutliersZ, int *nbOutliersX, int *nbOutliersY, int *nbOutliersZ, LINE_VECTORS lineVectors) {
+    // Check for outliers in X
+    if (lineVectors.vectorX < THRESHOLDX_LEFT || lineVectors.vectorX > THRESHOLDX_RIGHT) {
+        // Create a new outlier node
+        OUTLIER *newOutlierX = (OUTLIER *)malloc(sizeof(OUTLIER));
+        newOutlierX->line = lineVectors.time;
+        newOutlierX->vectorValue = lineVectors.vectorX;
+        newOutlierX->next = NULL;
+
+        // Check if pStartOutliersX is NULL, indicating an empty list
+        if (*pStartOutliersX == NULL) {
+            *pStartOutliersX = newOutlierX; // Set the start outlier as the new node
+            *pOutliersX = newOutlierX; // Set the current outlier as the new node
         } else {
-            // if it is not the first outlier, we add a new element to the linked list
-            (*pOutliersX)->next = malloc(sizeof(OUTLIER));
-            (*pOutliersX) = (*pOutliersX)->next;
-            (*pOutliersX)->line = lineVectors.time;
-            (*pOutliersX)->vectorValue = lineVectors.vectorX;
-            (*pOutliersX)->next = NULL;
+            (*pOutliersX)->next = newOutlierX; // Set the next of the current outlier as the new node
+            *pOutliersX = newOutlierX; // Set the current outlier as the new node
         }
-        (*nbOutliersX)++;
+        (*nbOutliersX)++; // Increment the count of outliers in X
     }
 
-    // check if the vector Y is an outlier
-    if (lineVectors.vectorY < thresholds[1][0] || lineVectors.vectorY > thresholds[1][1]) {
-        // if it is the first outlier, we initialize the first element of the linked list
-        if (*nbOutliersY == 0) {
-            (*pStartOutliersY)->line = lineVectors.time;
-            (*pStartOutliersY)->vectorValue = lineVectors.vectorY;
-            (*pStartOutliersY)->next = NULL;
+    // Check for outliers in Y
+    if (lineVectors.vectorY < THRESHOLDY_LEFT || lineVectors.vectorY > THRESHOLDY_RIGHT) {
+        // Create a new outlier node
+        OUTLIER *newOutlierY = (OUTLIER *)malloc(sizeof(OUTLIER));
+        newOutlierY->line = lineVectors.time;
+        newOutlierY->vectorValue = lineVectors.vectorY;
+        newOutlierY->next = NULL;
+
+        // Check if pStartOutliersY is NULL, indicating an empty list
+        if (*pStartOutliersY == NULL) {
+            *pStartOutliersY = newOutlierY; // Set the start outlier as the new node
+            *pOutliersY = newOutlierY; // Set the current outlier as the new node
         } else {
-            // if it is not the first outlier, we add a new element to the linked list
-            (*pOutliersY)->next = malloc(sizeof(OUTLIER));
-            (*pOutliersY) = (*pOutliersY)->next;
-            (*pOutliersY)->line = lineVectors.time;
-            (*pOutliersY)->vectorValue = lineVectors.vectorY;
-            (*pOutliersY)->next = NULL;
+            (*pOutliersY)->next = newOutlierY; // Set the next of the current outlier as the new node
+            *pOutliersY = newOutlierY; // Set the current outlier as the new node
         }
-        (*nbOutliersY)++;
+        (*nbOutliersY)++; // Increment the count of outliers in Y
     }
 
-    // check if the vector Z is an outlier
-    if (lineVectors.vectorZ < thresholds[2][0] || lineVectors.vectorZ > thresholds[2][1]) {
-        // if it is the first outlier, we initialize the first element of the linked list
-        if (*nbOutliersZ == 0) {
-            (*pStartOutliersZ)->line = lineVectors.time;
-            (*pStartOutliersZ)->vectorValue = lineVectors.vectorZ;
-            (*pStartOutliersZ)->next = NULL;
+    // Check for outliers in Z
+    if (lineVectors.vectorZ < THRESHOLDZ_LEFT || lineVectors.vectorZ > THRESHOLDZ_RIGHT) {
+        // Create a new outlier node
+        OUTLIER *newOutlierZ = (OUTLIER *)malloc(sizeof(OUTLIER));
+        newOutlierZ->line = lineVectors.time;
+        newOutlierZ->vectorValue = lineVectors.vectorZ;
+        newOutlierZ->next = NULL;
+
+        // Check if pStartOutliersZ is NULL, indicating an empty list
+        if (*pStartOutliersZ == NULL) {
+            *pStartOutliersZ = newOutlierZ; // Set the start outlier as the new node
+            *pOutliersZ = newOutlierZ; // Set the current outlier as the new node
         } else {
-            // if it is not the first outlier, we add a new element to the linked list
-            (*pOutliersZ)->next = malloc(sizeof(OUTLIER));
-            (*pOutliersZ) = (*pOutliersZ)->next;
-            (*pOutliersZ)->line = lineVectors.time;
-            (*pOutliersZ)->vectorValue = lineVectors.vectorZ;
-            (*pOutliersZ)->next = NULL;
+            (*pOutliersZ)->next = newOutlierZ; // Set the next of the current outlier as the new node
+            *pOutliersZ = newOutlierZ; // Set the current outlier as the new node
         }
-        (*nbOutliersZ)++;
+        (*nbOutliersZ)++; // Increment the count of outliers in Z
         }
 }
