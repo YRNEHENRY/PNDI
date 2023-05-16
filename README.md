@@ -18,5 +18,9 @@ https://www.kaggle.com/datasets/malekzadeh/motionsense-dataset
 4 - Il ne faut pas créer de chainon lors de la déclaration mais uniquement lorsqu'on a qqch à mettre dedans 
 5 - Utiliser les instructions sécurisées pour les fichiers
 6 - nbLine non initialisé
+7 - ne pas déclarer un peu partout
+8 - pgm ne fonctionne pas 
+
+
 
 
