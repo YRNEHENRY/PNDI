@@ -12,14 +12,14 @@ Our work will be divided into several phases and laboratories. It will run on th
 https://www.kaggle.com/datasets/malekzadeh/motionsense-dataset
 
 # Corrections phase 1
-1 - A ma connaissance, les macros fonctionnelles avec # define recalculent l'opération à chauqe fois que les THRESHOLD sont rencontrés => ne règle pas le problème
-2 - Aurait pu faire un tableau avec les pointeurs de début et le nbre de chainons construits
-3 - Mettre des #define pour les constantes
-4 - Il ne faut pas créer de chainon lors de la déclaration mais uniquement lorsqu'on a qqch à mettre dedans 
-5 - Utiliser les instructions sécurisées pour les fichiers
-6 - nbLine non initialisé
-7 - ne pas déclarer un peu partout
-8 - pgm ne fonctionne pas 
+1 - A ma connaissance, les macros fonctionnelles avec # define recalculent l'opération à chauqe fois que les THRESHOLD sont rencontrés => ne règle pas le problème  
+2 - Aurait pu faire un tableau avec les pointeurs de début et le nbre de chainons construits  
+3 - Mettre des #define pour les constantes  
+4 - Il ne faut pas créer de chainon lors de la déclaration mais uniquement lorsqu'on a qqch à mettre dedans  
+5 - Utiliser les instructions sécurisées pour les fichiers  
+6 - nbLine non initialisé  
+7 - ne pas déclarer un peu partout  
+8 - pgm ne fonctionne pas   
 
 
 
