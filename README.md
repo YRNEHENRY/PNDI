@@ -11,7 +11,7 @@ In the folders Data, Documents and Algorithms we will find respectively the csv 
 Our work will be divided into several phases and laboratories. It will run on the MotionSense dataset found on kaggle at this link:  
 https://www.kaggle.com/datasets/malekzadeh/motionsense-dataset
 
-Corrections phase 1
+# Corrections phase 1
 1 - A ma connaissance, les macros fonctionnelles avec # define recalculent l'opération à chauqe fois que les THRESHOLD sont rencontrés => ne règle pas le problème
 2 - Aurait pu faire un tableau avec les pointeurs de début et le nbre de chainons construits
 3 - Mettre des #define pour les constantes
