@@ -37,7 +37,7 @@ struct LineVectors {
 void checkOutliers(OUTLIER **pStartOutliersX, OUTLIER **pStartOutliersY, OUTLIER **pStartOutliersZ, OUTLIER **pOutliersX, OUTLIER **pOutliersY, OUTLIER **pOutliersZ, int *nbOutliersX, int *nbOutliersY, int *nbOutliersZ, LINE_VECTORS lineVectors);
 void writeOutliers(FILE* file, char* url, int numLine, int isMissingTime, int nbOutliersX, int nbOutliersY, int nbOutliersZ, OUTLIER* pStartOutlierX, OUTLIER* pStartOutlierY, OUTLIER* pStartOutlierZ);
 LINE_VECTORS getLineVectors(char* line);    
-
+void testPrintOutlier(OUTLIER* pOutliersX, OUTLIER* pOutliersY, OUTLIER* pOutliersZ);
 // main program
 int main(){
     // 7 characters (the last character is reserved for the null character '\0' which marks the end of the string)
@@ -79,18 +79,20 @@ int main(){
             }
 
             // initialization of the necessary variables
-            int nbLine, isMissingTime = 0;
+            int nbLine = 0;
+            int isMissingTime = 0;
             int previousTime = -1;
-            int nbOutliersX, nbOutliersY, nbOutliersZ = 0;
+            int nbOutliersX = 0;
+            int nbOutliersY = 0;
+            int nbOutliersZ = 0;
             // we create the first element of the linked list of outliers
-            OUTLIER* pStartOutliersX = malloc(sizeof(OUTLIER));
-            OUTLIER* pStartOutliersY = malloc(sizeof(OUTLIER));
-            OUTLIER* pStartOutliersZ = malloc(sizeof(OUTLIER));
+            OUTLIER* pStartOutliersX = NULL;
+            OUTLIER* pStartOutliersY = NULL;
+            OUTLIER* pStartOutliersZ = NULL;
             // we initialize the pointers that will be used to add new elements to the linked list
             OUTLIER* pOutliersX = pStartOutliersX;
             OUTLIER* pOutliersY = pStartOutliersY;
             OUTLIER* pOutliersZ = pStartOutliersZ;
-
             char line[MAX_SIZE];
             fgets(line, MAX_SIZE, pFileSub); // we skip the first line (the header)
 
@@ -103,10 +105,8 @@ int main(){
                     isMissingTime = 1;
                 }
                 previousTime = lineVectors.time;
-
                 // we check if there are outliers
                 checkOutliers(&pStartOutliersX, &pStartOutliersY, &pStartOutliersZ, &pOutliersX, &pOutliersY, &pOutliersZ, &nbOutliersX, &nbOutliersY, &nbOutliersZ, lineVectors);
-
                 nbLine++;
             }
 
