@@ -37,7 +37,7 @@ struct LineVectors {
 void checkOutliers(OUTLIER **pStartOutliersX, OUTLIER **pStartOutliersY, OUTLIER **pStartOutliersZ, OUTLIER **pOutliersX, OUTLIER **pOutliersY, OUTLIER **pOutliersZ, int *nbOutliersX, int *nbOutliersY, int *nbOutliersZ, LINE_VECTORS lineVectors);
 void writeOutliers(FILE* file, char* url, int numLine, int isMissingTime, int nbOutliersX, int nbOutliersY, int nbOutliersZ, OUTLIER* pStartOutlierX, OUTLIER* pStartOutlierY, OUTLIER* pStartOutlierZ);
 LINE_VECTORS getLineVectors(char* line);    
-void testPrintOutlier(OUTLIER* pOutliersX, OUTLIER* pOutliersY, OUTLIER* pOutliersZ);
+
 // main program
 int main(){
     // 7 characters (the last character is reserved for the null character '\0' which marks the end of the string)
