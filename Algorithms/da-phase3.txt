@@ -17,7 +17,7 @@ nbMovements = 0
 
 module(loadModels;models;models)
 
-while(nbMovements < 32)
+while(nbMovements < NB_MOVEMENTS)
 module(loadTest;pTestSet, vAccs, realClasses, nbMovements;vAccs, realClasses)
 module(findModel;models, vAccs, estimatedClasses, nbMovements;estimatedClasses, nbMovements)
 
@@ -39,10 +39,10 @@ endif
 
 skip first line of pModel
 while (!feof(pModel))
-pModel.getMovement()
+movement = pModel - 1
 i = 0
 while (i < TAB_SIZE)
-models[movement - 1][i] = pModel.getVAcc()
+models[movement][i] = pModel.getVAcc()
 i++
 endwhile
 endwhile
@@ -52,16 +52,17 @@ close pModel
 
 module(loadTest;pTestSet, vAccs, realClasses, nbMovements;vAccs, realClasses)
 ---*
-realClasses[nbMovements] = nbMovements
+movement = get first number in pTestSet
+realClasses[nbMovements] = movement
 
 i = 0
 while (i < TAB_SIZE)
-vAccs[i] = pTestSet.getVAcc()
+vAccs[i] = get next  number in pTestSet
 i++
 endwhile
 ------
 
-module(euclidianDistance;models, vAccs, movement;distance)
+module(getDistance;models, vAccs, movement;distance)
 ---*
 distance = 0
 i = 0
@@ -69,21 +70,19 @@ while (i < TAB_SIZE)
 distance += (models[movement][i] - vAccs[i])**2
 i++
 endwhile
-
-distance = sqrt(distance)
 ------
 
 module(findModel;models, vAccs, estimatedClasses, nbMovements;estimatedClasses, nbMovements)
 ---*
 estimation
-bestEuclidianDistance = MAX
+bestDistance = MAX
 i = 0
 while(i < 6)
-module(euclidianDistance;models, vAccs, i;euclidianDistance)
+module(getDistance;models, vAccs, i;distance)
 
-if(bestEuclidianDistance > euclidianDistance)
+if(bestDistance > distance)
 estimation = i+1
-bestEuclidianDistance = euclidianDistance
+bestDistance = distance
 endif
 i++
 endwhile

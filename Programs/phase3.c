@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "Header.h"
 
 // define constants
 #define TAB_SIZE 1000
@@ -11,7 +12,7 @@
 void loadModels(float (*models)[6][TAB_SIZE]);
 void loadTest(FILE *pTestSet, float vAccs[TAB_SIZE], int (*realClasses)[NB_MOVEMENTS], int nbMovements);
 void findModel(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int realClasses[NB_MOVEMENTS], int estimatedClasses[NB_MOVEMENTS], int nbMovements);
-float euclidianDistance(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int movement);
+float getDistance(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int movement);
 
 // main program
 int main(){
@@ -42,6 +43,10 @@ int main(){
         findModel(models, vAccs, realClasses, estimatedClasses, nbMovements);
         nbMovements++;
     }
+    
+    displayConfusionMatrix(realClasses,estimatedClasses, nbMovements);
+    displayResultsByClass(realClasses, estimatedClasses, nbMovements);
+    displayAccuracy(realClasses, estimatedClasses, nbMovements);
 
 }
 
@@ -119,7 +124,7 @@ void findModel(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int realClasses[
     // for each movement of the models
     for (int i = 0; i < 6; i++){
         // calculating the euclidian distance between the movement model and the vAccs from the testSet line
-        float distance = euclidianDistance(models, vAccs, i);
+        float distance = getDistance(models, vAccs, i);
         // if the distance is smaller than the best distance, the estimation is the movement
         if (distance < bestDistance){
             bestDistance = distance;
@@ -138,7 +143,7 @@ void findModel(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int realClasses[
 
     @return the euclidian distance between the movement model and the vAccs
 */
-float euclidianDistance(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int movement){
+float getDistance(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int movement){
     float distance = 0;
     for (int i = 0; i < TAB_SIZE; i++){
         distance += pow(models[movement][i] - vAccs[i], 2);
