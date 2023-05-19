@@ -47,7 +47,9 @@ int main(){
 // function definitions
 /*
     This function loads the models of the movements from the models.csv file
+
     @param models: the models of the movements
+
     @return: the vAccs of the models for each movement
 */
 void loadModels(float (*models)[6][TAB_SIZE]){
@@ -78,10 +80,12 @@ void loadModels(float (*models)[6][TAB_SIZE]){
 
 /*
     This function loads the test set from the testSet.csv file
+
     @param pTestSet: the pointer to the testSet.csv file
     @param vAccs: the vAccs of the testSet line
     @param realClasses: the real classes of the testSet line
     @param nbMovements: the number of the movement in the testSet
+
     @return: the vAccs and the real classes of the testSet line
 */
 void loadTest(FILE *pTestSet, float *vAccs[TAB_SIZE], int *realClasses[NB_MOVEMENTS], int nbMovements){
@@ -98,11 +102,13 @@ void loadTest(FILE *pTestSet, float *vAccs[TAB_SIZE], int *realClasses[NB_MOVEME
 
 /*
     This function finds the right model for the vAccs
+
     @param models: the models of the movements
     @param vAccs: the vAccs of the testSet line
     @param realClasses: the real classes of the testSet line
     @param estimatedClasses: the estimated classes of the testSet line
     @param nbMovements: the number of the movement in the testSet
+
     @return: the estimated classes of the testSet line
 */
 void findModel(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int *realClasses[NB_MOVEMENTS], int *estimatedClasses[NB_MOVEMENTS], int nbMovements){
@@ -124,9 +130,11 @@ void findModel(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int *realClasses
 
 /*
     This function calculates the euclidian distance between the movement model and the vAccs
+
     @param models: the models of the movements
     @param vAccs: the vAccs of the testSet
     @param movement: the movement of the model
+
     @return the euclidian distance between the movement model and the vAccs
 */
 float euclidianDistance(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int movement){
