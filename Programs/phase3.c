@@ -1,5 +1,6 @@
 // include libraires
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 // define constants
@@ -8,8 +9,8 @@
 
 // function prototypes
 void loadModels(float (*models)[6][TAB_SIZE]);
-void loadTest(FILE *pTestSet, float *vAccs[TAB_SIZE], int *realClasses[NB_MOVEMENTS], int nbMovements);
-void findModel(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int *realClasses[NB_MOVEMENTS], int *estimatedClasses[NB_MOVEMENTS], int nbMovements);
+void loadTest(FILE *pTestSet, float vAccs[TAB_SIZE], int (*realClasses)[NB_MOVEMENTS], int nbMovements);
+void findModel(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int realClasses[NB_MOVEMENTS], int estimatedClasses[NB_MOVEMENTS], int nbMovements);
 float euclidianDistance(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int movement);
 
 // main program
@@ -31,12 +32,12 @@ int main(){
     int nbMovements = 0;
 
     // loading the models
-    loadModels(models);
+    loadModels(&models);
     
     // while the end of the file is not reached
     while(nbMovements < NB_MOVEMENTS){
         // loading the test set line
-        loadTest(pTestSet, vAccs, realClasses, nbMovements);
+        loadTest(pTestSet, vAccs, &realClasses, nbMovements);
         // finding the right model for the vAccs
         findModel(models, vAccs, realClasses, estimatedClasses, nbMovements);
         nbMovements++;
@@ -88,11 +89,11 @@ void loadModels(float (*models)[6][TAB_SIZE]){
 
     @return: the vAccs and the real classes of the testSet line
 */
-void loadTest(FILE *pTestSet, float *vAccs[TAB_SIZE], int *realClasses[NB_MOVEMENTS], int nbMovements){
+void loadTest(FILE *pTestSet, float vAccs[TAB_SIZE], int (*realClasses)[NB_MOVEMENTS], int nbMovements){
     // getting the movement number
     int movement;
     fscanf(pTestSet, "%d,", &movement);
-    realClasses[nbMovements] = movement;
+    *realClasses[nbMovements] = movement;
 
     // getting the vAccs
     for (int i = 0; i < TAB_SIZE; i++){
@@ -111,7 +112,7 @@ void loadTest(FILE *pTestSet, float *vAccs[TAB_SIZE], int *realClasses[NB_MOVEME
 
     @return: the estimated classes of the testSet line
 */
-void findModel(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int *realClasses[NB_MOVEMENTS], int *estimatedClasses[NB_MOVEMENTS], int nbMovements){
+void findModel(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int realClasses[NB_MOVEMENTS], int estimatedClasses[NB_MOVEMENTS], int nbMovements){
     int estimation = 0;
     float bestDistance = MAXFLOAT;
 
