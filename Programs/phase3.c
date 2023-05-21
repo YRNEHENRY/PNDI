@@ -2,15 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "Header.h"
 
 // define constants
 #define TAB_SIZE 1000
 #define NB_MOVEMENTS 32
 
 // function prototypes
-void loadModels(float (*models)[6][TAB_SIZE]);
-void loadTest(FILE *pTestSet, float vAccs[TAB_SIZE], int (*realClasses)[NB_MOVEMENTS], int nbMovements);
+void loadModels(float models[6][TAB_SIZE]);
+void loadTest(FILE *pTestSet, float vAccs[TAB_SIZE], int realClasses[NB_MOVEMENTS], int nbMovements);
 void findModel(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int realClasses[NB_MOVEMENTS], int estimatedClasses[NB_MOVEMENTS], int nbMovements);
 float getDistance(float models[][TAB_SIZE], float vAccs[TAB_SIZE], int movement);
 
@@ -32,13 +31,17 @@ int main(){
     int estimatedClasses[NB_MOVEMENTS] = {};
     int nbMovements = 0;
 
+    // Skip first line of pTestSet
+    char line[100];
+    fgets(line, sizeof(line), pTestSet);
+    
     // loading the models
-    loadModels(&models);
+    loadModels(models);
     
     // while the end of the file is not reached
     while(nbMovements < NB_MOVEMENTS){
         // loading the test set line
-        loadTest(pTestSet, vAccs, &realClasses, nbMovements);
+        loadTest(pTestSet, vAccs, realClasses, nbMovements);
         // finding the right model for the vAccs
         findModel(models, vAccs, realClasses, estimatedClasses, nbMovements);
         nbMovements++;
@@ -55,7 +58,7 @@ int main(){
 
     printf("Nb movement    EstimatedClasses      RealClasses\n");
     for (int i = 0; i < NB_MOVEMENTS; i++) {
-       printf("Model %d: %d - %d\n", i, estimatedClasses[i], realClasses[i]);
+       printf("Model %d: %d - %d\n", i+1, estimatedClasses[i], realClasses[i]);
     }
     
 }
@@ -68,29 +71,27 @@ int main(){
 
     @return: the vAccs of the models for each movement
 */
-void loadModels(float (*models)[6][TAB_SIZE]){
-    FILE *pModels = fopen("../Data/Sets/models.csv", "r");
+void loadModels(float models[6][TAB_SIZE]){
+    FILE *pModels = fopen("../Data/Sets/model.csv", "r");
     if (pModels == NULL) {
-        perror("Unable to open the file: models.csv");
+        perror("Unable to open the file: model.csv");
         exit(1);
     }
 
-    // initialization of the necessary variables
-    int movement;
-    float vAcc;
+    // Skip first line of pModel
+    char line[100];
+    fgets(line, sizeof(line), pModels);
 
-    fscanf(pModels, "%*[^\n]\n"); // skipping the first line of the file
-
-    // for each movement / read the file line by line
-    while (fscanf(pModels, "%d,", &movement) == 1) {
-        movement--; // adujsting the movement number
-        for (int i = 0; i < TAB_SIZE; i++) {
-            // getting the vAccs
-            fscanf(pModels, "%f,", &vAcc);
-            (*models)[movement][i] = vAcc;
+    // for each movement
+    for (int i = 0; i < 6; i++) {
+        int movement;
+        fscanf(pModels, "%d,", &movement);
+        // for each vAccs of the movement
+        for (int j = 0; j < TAB_SIZE; j++) {
+            fscanf(pModels, "%f,", &models[movement - 1][j]);
         }
     }
-    
+
     fclose(pModels);
 }
 
@@ -101,18 +102,16 @@ void loadModels(float (*models)[6][TAB_SIZE]){
     @param vAccs: the vAccs of the testSet line
     @param realClasses: the real classes of the testSet line
     @param nbMovements: the number of the movement in the testSet
-
+    
     @return: the vAccs and the real classes of the testSet line
 */
-void loadTest(FILE *pTestSet, float vAccs[TAB_SIZE], int (*realClasses)[NB_MOVEMENTS], int nbMovements){
+void loadTest(FILE *pTestSet, float vAccs[TAB_SIZE], int realClasses[NB_MOVEMENTS], int nbMovements){
     // getting the movement number
-    int movement;
-    fscanf(pTestSet, "%d,", &movement);
-    *realClasses[nbMovements] = movement;
+    fscanf(pTestSet, "%d,", &realClasses[nbMovements]);
 
     // getting the vAccs
     for (int i = 0; i < TAB_SIZE; i++){
-        fscanf(pTestSet, "%f", &vAccs[i]);
+        fscanf(pTestSet, "%f,", &vAccs[i]);
     }
 }
 
