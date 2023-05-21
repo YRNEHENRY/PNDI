@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "Header.h"
 
 // define constants
 #define TAB_SIZE 1000
@@ -34,7 +35,7 @@ int main(){
     // Skip first line of pTestSet
     char line[100];
     fgets(line, sizeof(line), pTestSet);
-    
+
     // loading the models
     loadModels(models);
     
