@@ -51,16 +51,16 @@ int main(){
     // closing the file
     fclose(pTestSet);
     
-    /*
+    
     displayConfusionMatrix(realClasses,estimatedClasses, nbMovements);
     displayResultsByClass(realClasses, estimatedClasses, nbMovements);
     displayAccuracy(realClasses, estimatedClasses, nbMovements);
-    */
+    
 
-    printf("Nb movement    EstimatedClasses      RealClasses\n");
+    /*printf("Nb movement    EstimatedClasses      RealClasses\n");
     for (int i = 0; i < NB_MOVEMENTS; i++) {
        printf("Model %d: %d - %d\n", i+1, estimatedClasses[i], realClasses[i]);
-    }
+    }*/
     
 }
 
