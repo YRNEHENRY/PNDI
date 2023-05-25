@@ -34,29 +34,32 @@ int main() {
         return 1;
     }
 
+    // Skip first line of pTrainSet
+    char buffer[1000];
+    fgets(buffer, sizeof(buffer), pTrainSet);
+
     // writing the first line of the patterns.csv file (the header)
-    fprintf(pPatterns, "movement");
-    for (int i = 0; i < MAX_VACCS; i++) {
-        fprintf(pPatterns, ",vAccs");
-    }
-    fprintf(pPatterns, "\n");
+    fprintf(pPatterns, "movement, vAccs(1000)\n");
 
     // reading the trainSet.csv file and putting the current movement in the variable `movement`
     int movement, actualMovement;
     fscanf(pTrainSet, "%d,", &movement);
     
     // while the end of the file is not reached
-    while (!feof(pTrainSet)) {
+    while (fscanf(pTrainSet, "%d,", &actualMovement) == 1) {
         actualMovement = movement;
         VACC vAccs[MAX_VACCS] = {0};
 
         // while the current movement is the same as the previous one: we add the values of the vAccs to the structure
         while (actualMovement == movement) {
             getVAcc(vAccs, pTrainSet);
-            fscanf(pTrainSet, "%d", &movement);
+            if (fscanf(pTrainSet, "%d,", &movement) != 1) {
+                break;  // Arrêter la boucle si la lecture échoue
+            }
+            
         }
 
-        calculMeansAndSaveFile(vAccs, movement, pPatterns);
+        calculMeansAndSaveFile(vAccs, actualMovement, pPatterns);
     }
 
     // closing the files
@@ -74,9 +77,9 @@ int main() {
     :param pTrainSet: the pointer to the trainSet.csv file
 */
 void getVAcc(VACC vAccs[], FILE *pTrainSet) {
-    int value;
+    double value;
     for(int i = 0; i < MAX_VACCS; i++) {
-        fscanf(pTrainSet, "%d,", &value);
+        fscanf(pTrainSet, "%lf,", &value);
         if (value != 0) {
             vAccs[i].sum += value;
             vAccs[i].count++;
@@ -91,7 +94,7 @@ void getVAcc(VACC vAccs[], FILE *pTrainSet) {
 void calculMeansAndSaveFile(VACC vAccs[], int movement, FILE *pPatterns) {
     fprintf(pPatterns, "%d", movement);
     for (int i = 0; i < MAX_VACCS; i++) {
-        fprintf(pPatterns, ",%.lf", vAccs[i].sum / vAccs[i].count);
+        fprintf(pPatterns, ",%lf", vAccs[i].sum / vAccs[i].count);
     }
     fprintf(pPatterns, "\n");
 }
